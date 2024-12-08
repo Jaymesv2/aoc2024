@@ -1,0 +1,150 @@
+cabal-version:      2.4
+name:               compiler
+version:            0.1.0.0
+license:            MIT
+copyright:          2024  Trent Turner
+author:             Trent Turner
+synopsis:           A Simple C Compiler
+
+-- A longer description of the package.
+-- description:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+
+-- extra-source-files:
+  -- LICENSE
+   README.md
+
+common shared
+  ghc-options:
+    -Wall -Wincomplete-record-updates -Wincomplete-uni-patterns
+    -Wmissing-deriving-strategies -Wunused-foralls -Wunused-foralls
+    -fprint-explicit-foralls -fprint-explicit-kinds
+    -- -fplugin=Effectful.Plugin
+    -funbox-strict-fields
+    -- -fspecialise-aggressively -fexpose-all-unfoldings
+
+
+  mixins:
+    --base hiding (Prelude),
+    --relude (Relude as Prelude, Relude.Container.One),
+    --relude
+
+  default-extensions:
+    BangPatterns
+    ConstraintKinds
+    DataKinds
+    DeriveDataTypeable
+    DeriveFoldable
+    DeriveFunctor
+    DeriveGeneric
+    DeriveLift
+    DeriveTraversable
+    DerivingStrategies
+    DerivingVia
+    EmptyCase
+    EmptyDataDecls
+    EmptyDataDeriving
+    ExistentialQuantification
+    ExplicitForAll
+    FlexibleContexts
+    FlexibleInstances
+    GADTSyntax
+    GeneralisedNewtypeDeriving
+    ImportQualifiedPost
+    KindSignatures
+    LambdaCase
+    MultiParamTypeClasses
+    MultiWayIf
+    NoStarIsType
+    NumericUnderscores
+    OverloadedStrings
+    PolyKinds
+    PostfixOperators
+    RankNTypes
+    ScopedTypeVariables
+    StandaloneDeriving
+    StandaloneKindSignatures
+    TupleSections
+    TypeApplications
+    TypeFamilies
+    TypeOperators
+    ViewPatterns
+    LinearTypes
+
+    NamedFieldPuns
+    RecordWildCards
+    OverloadedRecordDot
+    DuplicateRecordFields
+
+  build-depends:
+    , base          >=4.13.0.0 && <4.19.0.0.0
+    , bytestring
+    , text
+    -- , linear-base
+    , random
+    , vector
+    , parsec
+    , containers
+    , conduit
+    , mtl
+    , transformers
+    , array
+    -- , effectful
+    -- , effectful-core
+    -- , effectful-plugin
+    , recursion-schemes
+    -- fun stuff
+    -- , selective
+    -- , validation-selective
+    -- , data-fix
+
+    -- , filepath
+    -- , fastsum -- fastsum is marked as broken on nixpkgs :(
+
+    --, happy
+    --, happy  >= 1.20.1.1
+    --, alex
+
+    --, aeson
+    --, async
+    --, base          >=4.13.0.0 && <4.18.0.0.0
+    --, data-default
+    --, directory
+    --, filepath
+    --, optics-core
+    --, profunctors
+    --, relude        >=1.0
+    --, shower
+    --, time
+    , with-utf8
+
+  default-language:   Haskell2010
+
+
+library compiler-lib
+  import: shared
+  exposed-modules:
+    Lib
+    Solver
+    Days.Day1
+    Days.Day2
+    Days.Day3
+    Util.List
+  hs-source-dirs:     src
+
+executable compiler
+  import:  shared
+  build-depends: compiler-lib
+  main-is: Main.hs
+  hs-source-dirs: app
+  --exposed-modules:
+  --other-modules:
+
+test-suite tests
+  import: shared
+  type: exitcode-stdio-1.0
+  main-is: Test.hs
+  build-depends: HUnit, QuickCheck, compiler-lib
+  hs-source-dirs: tests
