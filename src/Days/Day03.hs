@@ -1,5 +1,4 @@
-{-# LANGUAGE TupleSections #-}
-module Days.Day3 (day3) where
+module Days.Day03 (day3) where
 
 import Solver
 

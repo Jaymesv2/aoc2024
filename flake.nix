@@ -27,11 +27,12 @@
             root = ./.;
             fileset = lib.fileset.unions [
               ./src
+              ./app
               ./aoc.cabal
             ];
           });
           # The base package set (this value is the default)
-          # basePackages = pkgs.haskellPackages;
+          basePackages = pkgs.haskellPackages;
 
           # Packages to add on top of `basePackages`
           packages = {
@@ -41,7 +42,7 @@
           # Add your package overrides here
           settings = {
             # Need alex and happy
-            compiler = {
+            aoc = {
               # extraBuildDepends = [ pkgs.haskellPackages.alex pkgs.haskellPackages.happy ];
             };
           };
@@ -103,7 +104,7 @@
 
         # Default shell.
         devShells.default = pkgs.mkShell {
-          name = "compiler";
+          name = "aoc";
           meta.description = "Haskell development environment";
           # See https://community.flake.parts/haskell-flake/devshell#composing-devshells
           inputsFrom = [

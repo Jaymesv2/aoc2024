@@ -8,12 +8,29 @@ module Util.List
     , fmtMatrix
     , fmtTable
     , groupOn
+    , indexMatrix
+    , combinations
+    , combinationsN
     ) where
 
-import Data.List (intercalate, transpose, groupBy, sortOn)
+import Data.List (intercalate, transpose, groupBy, sortOn, tails)
+
+combinations :: [a] -> [(a,a)]
+combinations [] = []  
+combinations (x:xs) = fmap (x,) xs ++ combinations xs
+
+combinationsN :: Int -> [a] -> [[a]]
+combinationsN 0 _ = [[]]
+combinationsN n lst = do
+    (x:xs) <- tails lst
+    rest   <- combinationsN (n-1) xs
+    return $ x : rest
+
+indexMatrix :: [[a]] -> [((Int, Int),a)]
+indexMatrix xs = [ ((ix, iy), y) | (ys, ix) <- zip xs [0..], (y, iy) <- zip ys [0..]]
 
 splitOn :: (a->Bool) -> [a] -> [[a]]
-splitOn on s = uncurry (:) $ fmap f $ break on s 
+splitOn on s = uncurry (:) $ f <$> break on s 
     where f x = if null x then [] else splitOn on $ tail x
 
 groupsOf :: Int -> [a] -> [[a]]

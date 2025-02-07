@@ -1,11 +1,11 @@
 -- {-# LANGUAGE TupleSections #-}
-module Days.Day4 (day4) where
+module Days.Day04 (day4) where
 
 import Solver
 
 import Control.Arrow hiding (loop)
 import Data.Maybe
-import Data.List (transpose, null, tails, isPrefixOf)
+import Data.List (transpose, tails, isPrefixOf)
 
 day4 :: Solver
 day4 = mkSolver 4 "Ceres Search" $ (part1 &&& part2) . lines

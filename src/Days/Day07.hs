@@ -1,4 +1,4 @@
-module Days.Day7 (day7) where
+module Days.Day07 (day7) where
 
 import Solver
 
@@ -12,17 +12,16 @@ solver ops  = sum . fmap fst . filter (uncurry elem . fmap combos)
         combos [] = []
         combos [x] = [x]
         combos (x:y:xs) = ops >>= \f -> combos $ f x y:xs
-        -- [u | f <- ops, u <- combos (f x y:xs)]
 
 
-combine :: Int64 -> Int64 -> Int64
-combine a b = ( lengthInt64 b  * a) + b
+intConcat :: Int64 -> Int64 -> Int64
+intConcat a b = ( lengthInt64 b  * a) + b
 
 parse :: String -> [(Int64, [Int64])]
 parse = fmap ((read *** fmap read . words . tail ) . span (/=':')) . lines 
 
 day7 :: Solver
-day7 = mkSolver 7 "Bridge Repair" $ ( solver  [(+),  (*)] &&& solver [(+),  (*), combine] ) . parse
+day7 = mkSolver 7 "Bridge Repair" $ ( solver  [(+),  (*)] &&& solver [(+),  (*), intConcat] ) . parse
 
 lengthInt64 :: Int64 -> Int64
 lengthInt64 = helper 1 

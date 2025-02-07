@@ -1,4 +1,4 @@
-module Days.Day1 (day1) where
+module Days.Day01 (day1) where
 
 import Solver
 
@@ -14,11 +14,11 @@ pairs (a:b:xs) = (a,b):pairs xs
 pairs _ = []
 
 parse :: String -> ([Int], [Int])
--- parse = unzip . fmap (listToTuple2 . fmap read . words) . lines
 parse = unzip . pairs . fmap read . words
 
 part1 :: ([Int], [Int]) -> Int
-part1 = sum . fmap (abs . uncurry (-)) . uncurry zip
+part1 = sum . fmap (abs . uncurry (-)) . uncurry zip 
+
 
 part2 :: ([Int], [Int]) -> Int
 part2 (a,b) = sum . fmap score $ a

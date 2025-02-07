@@ -17,24 +17,54 @@ import Data.Text.IO qualified as TIO
 import Text.Parsec (Parsec, runParser)
 
 
--- data AnswerClass = Number | Visual | Dynamic
--- class SolutionClass where
---     classify :: 
-
+data AnswerClass = Number | Visual | Dynamic
 
 -- data TestCase = forall a b. TestCase String a b
 
+data Unimplemented = Unimplemented
+
+-- class Solution   where
+--     answClass :: AnswerClass
 
 
-data Solver = Solver Int String (Text -> Solution)
+-- instance Solution Unimplemented 
+    
+
+data TestCase = TestCase String 
+
+
+
+
+-- data Solver = forall a b. (Solution a, Solution b) => Solver Int String [TestCase] (Text -> a, Text -> b)
+data Solver = forall a b. Solver Int String [TestCase] (Text -> Solution)
+
 data Solution = forall a b. (Show a, Show b) => Solution Int String a b
 
+
+-- mkParsecSolver3 :: (Show a, Show b) => Int -> String -> [TestCase] -> Parsec Text u c -> u -> (c -> a) -> (c -> b) -> Solver
+-- mkParsecSolver3 day name parser state fa fb = Solver day name [] (\txt ->  Solution day name (fa (parse txt)) (fb (parse txt)) )
+--     where
+--         parse = runPar parser name state
+
+
+
 mkParsecSolver :: (Show a, Show b) => Int -> String -> u -> Parsec Text u c -> (c -> (a,b)) -> Solver
-mkParsecSolver day name state parser f = Solver day name (uncurry (Solution day name) . f . runPar parser name state)
+mkParsecSolver day name state parser f = Solver day name [] (uncurry (Solution day name) . f . runPar parser name state)
+
+mkParsecSolver2 :: (Show a, Show b) => Int -> String -> u -> Parsec Text u c -> (c -> a) -> (c -> b) -> Solver
+mkParsecSolver2 day name state parser fa fb = Solver day name [] (\txt ->  Solution day name (fa (parse txt)) (fb (parse txt)) )
+    where
+        parse = runPar parser name state
+        
+    
+
 
 mkSolver :: (Show a, Show b) => Int -> String -> (String -> (a,b)) -> Solver
-mkSolver d n s = Solver d n (uncurry (Solution d n) . s . unpack)
+mkSolver d n s = Solver d n [] (uncurry (Solution  d n ) . s . unpack)
 
+mkSolver2 :: (Show a, Show b) => Int -> String -> (String -> a) -> (String -> b) -> Solver
+mkSolver2 d n fa fb = Solver d n [] (\inp -> Solution  d n (fa . unpack $ inp) (fb . unpack $ inp) )
+    
 
 
 runPar :: Parsec Text u a -> String -> u -> Text -> a
@@ -58,7 +88,7 @@ solutionToTuple (Solution d name x y) = (d, name, show x, show y)
 
 
 runSolver' :: (Int -> FilePath) -> Solver -> IO Solution
-runSolver' inputFinder (Solver n _ solver) = solver <$> TIO.readFile (inputFinder n)
+runSolver' inputFinder (Solver n _ _ solver) = solver <$> TIO.readFile (inputFinder n)
 
 
 runSolver :: Solver -> IO Solution
@@ -67,6 +97,14 @@ runSolver = runSolver' (printf "inputs/%02d.txt")
 genTable :: [Solution] -> String
 genTable sols = makeTableWithHeaders ["Day", "Name", "Part 1", "Part 2"] [show <$> a,b,c,d]
     where (a,b,c,d) = unzip4 $ fmap solutionToTuple sols
+
+
+
+
+
+
+
+
 {-
 
 import System.Environment
